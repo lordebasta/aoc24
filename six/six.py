@@ -21,12 +21,30 @@ diri = 0
 
 dir_mat = defaultdict(set)
 
+res = [0]
 
 def creates_loop(r, c, diri):
+    ogr, ogc = r, c
     diri = (diri+1) % len(dirs)
+    visited = set()
     while 0 <= r < m and 0 <= c < n:
         x, y = dirs[diri]
-        r, c = pos
+
+        while 0 <= r+x < m and 0 <= c+y < n and mat[r+x][c+y] == "#":
+            diri = (diri + 1) % len(dirs)
+            x, y = dirs[diri]
+
+        if (x, y) in dir_mat[(r, c)]:
+            print(f"start: ${(ogr, ogc)}, meet: ${(r, c)}")
+            res[0] += 1
+            break
+        if (r, c) in visited:
+            print(ogr, ogc)
+            break
+        visited.add((r, c))
+
+        r += x
+        c += y
 
 
 while 0 <= pos[0] < m and 0 <= pos[1] < n:
@@ -34,25 +52,7 @@ while 0 <= pos[0] < m and 0 <= pos[1] < n:
     r, c = pos
 
     if 0 <= r+x < m and 0 <= c+y < n and mat[r+x][c+y] != "#":
-        if creates_loop(r, c, diri):
-            print((r, c))
-        i = 1
-        a, b = dirs[]
-        while True:
-            delta_r, delta_c = a*i, b*i
-            if not 0 <= r+delta_r < m or not 0 <= c+delta_c < n or \
-               mat[r+delta_r][c+delta_c] == "#":
-                break
-
-            if mat[r+delta_r][c+delta_c] == "X" and (a, b) in dir_mat[(r+delta_r, c+delta_c)]:
-                print(r, c)
-                break
-
-            longr, longc = r+a*(i+1), c+b*(i+1)
-            if 0 <= longr < m and 0 <= longc < n and \
-               mat[longr][longc] == "#":
-
-            i += 1
+        creates_loop(r, c, diri)
 
     while 0 <= r+x < m and 0 <= c+y < n and mat[r+x][c+y] == "#":
         diri = (diri + 1) % len(dirs)
@@ -68,3 +68,4 @@ a = 0
 for l in mat:
     a += l.count('X')
 print(a)
+print(res)
